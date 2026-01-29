@@ -20,6 +20,9 @@ Examples:
 from .block import (
     C1,
     C2,
+    C2f,
+    C2f_SimAM,
+    SimAM,
     C2PSA,
     C3,
     C3TR,
