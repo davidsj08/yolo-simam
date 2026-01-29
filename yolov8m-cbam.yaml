@@ -36,6 +36,7 @@ head:
   - [-1, 1, Conv, [512, 3, 2]]
   - [[-1, 9], 1, Concat, [1]]
   - [-1, 2, C2f, [1024]] # 23 (P5/32-large)
-  - [-1, 1, CBAM, []]    # <--- CBAM 3: Fokus pada konteks global (P5)
+
+
 
   - [[16, 20, 24], 1, Detect, [nc]] # Perhatikan index berubah karena ada selipan CBAM
