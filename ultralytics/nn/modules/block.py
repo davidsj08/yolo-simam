@@ -2069,9 +2069,10 @@ class RealNVP(nn.Module):
 
 #CBAM
 class ChannelAttention(nn.Module):
-    def __init__(self, channels, reduction=16):
+    def __init__(self, channels, reduction=8): 
         super().__init__()
-        mid = max(1, channels // reduction)
+        mid = max(channels // reduction, 32)
+        if mid > channels: mid = channels 
         self.avg_pool = nn.AdaptiveAvgPool2d(1)
         self.max_pool = nn.AdaptiveMaxPool2d(1)
         self.fc = nn.Sequential(
@@ -2086,11 +2087,11 @@ class ChannelAttention(nn.Module):
         max_out = self.fc(self.max_pool(x))
         return self.sigmoid(avg_out + max_out)
 
-
 class SpatialAttention(nn.Module):
     def __init__(self, kernel_size=7):
         super().__init__()
-        self.conv = nn.Conv2d(2, 1, kernel_size, padding=kernel_size//2, bias=False)
+        padding = kernel_size // 2 
+        self.conv = nn.Conv2d(2, 1, kernel_size, padding=padding, bias=False)
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
@@ -2099,7 +2100,6 @@ class SpatialAttention(nn.Module):
         out = torch.cat([avg_out, max_out], dim=1)
         return self.sigmoid(self.conv(out))
 
-
 class CBAM(nn.Module):
     def __init__(self, c1, kernel_size=7):
         super().__init__()
@@ -2107,7 +2107,7 @@ class CBAM(nn.Module):
         self.sa = SpatialAttention(kernel_size)
 
     def forward(self, x):
-        identity = x
-        x = x * self.ca(x)
-        x = x * self.sa(x)
-        return x + identity
+        identity = x 
+        out = x * self.ca(x)
+        out = out * self.sa(out)
+        return out + identity
