@@ -1608,6 +1608,7 @@ def parse_model(d, ch, verbose=True):
             C1,
             C2,
             C2f,
+            C2f_SimAM,
             C3k2,
             C2fAttn,
             C3,
